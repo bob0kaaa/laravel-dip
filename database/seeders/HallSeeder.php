@@ -32,7 +32,7 @@ class HallSeeder extends Seeder
         DB::table('halls')->insert([
             'name' => 'Зал 1',
             'col' => 12,
-            'row' => '10',
+            'row' => 10,
             'count_vip' => 1000,
             'count_normal' => 500,
             'open'=> true,
@@ -42,7 +42,7 @@ class HallSeeder extends Seeder
         DB::table('halls')->insert([
             'name' => 'Зал 2',
             'col' => 12,
-            'row' => '10',
+            'row' => 10,
             'count_vip' => 1000,
             'count_normal' => 500,
             'open'=> true,

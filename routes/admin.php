@@ -9,15 +9,16 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('admin')->middleware(['auth', 'role'])->group(function (){
-    Route::redirect('/', '/admin')->name('admin');
 
     Route::get('/', [AdminController::class, 'index'])->name('admin.index');
     Route::get('/open/{param}', [HallController::class, 'open'])->name('admin.open');
-    Route::any('/createHall', [HallController::class, 'create'])->name('admin.createHall');
-    Route::any('/destroyHall/{id}', [HallController::class, 'destroy'])->name('admin.destroyHall');
+
+    Route::post('/createHall', [HallController::class, 'create'])->name('admin.createHall'); // +
+    Route::any('/destroyHall/{id}', [HallController::class, 'delete'])->name('admin.destroyHall'); // +
     Route::any('/updateHall', [HallController::class, 'update'])->name('admin.updateHall');
     Route::any('/editHall', [HallController::class, 'edit'])->name('admin.editHall');
     Route::any('/editPriceHall', [HallController::class, 'editPriceHall'])->name('admin.editPriceHall');
+
     Route::any('/createFilm', [FilmController::class, 'create'])->name('admin.createFilm');
     Route::any('/destroyFilm/{id}', [FilmController::class, 'destroy'])->name('admin.destroyFilm');
     Route::any('/createseance', [SeanceController::class, 'create'])->name('admin.createseance');
@@ -25,3 +26,4 @@ Route::prefix('admin')->middleware(['auth', 'role'])->group(function (){
     Route::any('/destroyseance/{id}', [SeanceController::class, 'destroy'])->name('admin.destroyseance');
 
 });
+

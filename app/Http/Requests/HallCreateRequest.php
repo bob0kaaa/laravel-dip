@@ -15,7 +15,7 @@ class HallCreateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -28,14 +28,5 @@ class HallCreateRequest extends FormRequest
         return [
             'name' => ['required', 'string'],
         ];
-    }
-    public function failedValidation(Validator $validator)
-    {
-        /*throw new HttpResponseException(
-            response($validator->errors(), 400)
-        );*/
-        throw new HttpResponseException(
-            response($validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY)
-        );
     }
 }

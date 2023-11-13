@@ -37,4 +37,4 @@ Route::get('/logout', function () {
     return redirect('/');
 })->name('logout');
 
-Route::get('/hall', [HallController::class, 'show'])->name('hall.show');
+
