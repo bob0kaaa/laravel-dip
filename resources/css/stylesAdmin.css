@@ -300,7 +300,9 @@ input[type='radio'], input[type='submit'], button, .conf-step__header, select {
   background-repeat: repeat; }
 
 .conf-step__chair_disabled {
-  border-color: #C4C4C4; }
+  border-color: #C4C4C4;
+  background-color: #fff;
+}
 
 .conf-step__selectors-box {
   font-size: 0;

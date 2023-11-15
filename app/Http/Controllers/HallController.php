@@ -17,9 +17,9 @@ class HallController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-//        dd(Auth::user()->admin);
+//        dd($request['1']);
     }
 
     /**
@@ -63,17 +63,9 @@ class HallController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Request $request, Hall $hall)
+    public function edit(string $id)
     {
-        $json_seat = json_decode($request['json_seat']);
-        $hall1 = $request['hall'];
-        $hall_new_decode = json_decode($request['newTypeOfSeats']);
-        $hall_decode = json_decode($hall1['seats_type']);
-        $i=0;
-
-        $hall1['seats_type'] = json_encode($hall_decode, JSON_THROW_ON_ERROR);
-       dd($hall_new_decode);
-
+        return "edit";
     }
 
     /**
@@ -81,7 +73,7 @@ class HallController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        return "update";
     }
 
     /**
