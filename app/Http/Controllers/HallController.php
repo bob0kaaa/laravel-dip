@@ -73,7 +73,7 @@ class HallController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        return "update";
+        return "up";
     }
 
     /**
