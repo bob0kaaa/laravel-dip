@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::view('/', 'home.index')->name('home');
+
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 
 Route::middleware('guest')->group(function () {
@@ -32,6 +32,7 @@ Route::middleware('guest')->group(function () {
     Route::post('login', [LoginController::class, 'store'])->name('login.store');
 });
 
+Route::get('/', [HallController::class, 'show'])->name('hall.show');
 Route::get('/logout', function () {
     Auth::logout();
     return redirect('/');

@@ -13,11 +13,12 @@ class AdminController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+//        dd($request);
         $halls = DB::table('halls')->get()->sortBy('name');
-
-        return view('admin.index', compact('halls'));
+        $selected_hall = ($request->selected_hall) ?: $halls->first()->id;
+        return view('admin.index', ['halls' => $halls, 'selected_hall' => $selected_hall]);
     }
 
     /**

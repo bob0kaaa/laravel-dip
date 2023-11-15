@@ -46,16 +46,16 @@
         <header class="conf-step__header conf-step__header_opened">
             <h2 class="conf-step__title">{{ __('Конфигурация залов') }}</h2>
         </header>
-        <form action="{{ route('admin.index') }}" class="conf-step__wrapper">
+        <div class="conf-step__wrapper">
             <p class="conf-step__paragraph">{{ __('Выберите зал для конфигурации:') }}</p>
             <ul class="conf-step__selectors-box">
                 @foreach($halls as $hall)
                     <li>
                         @if($hall->{'id'} == $selected_hall)
-                            <input type="radio" id="{{ $hall->id }}" data-rows="{{ $hall->row }}" data-cols="{{ $hall->col }}" onclick="radioInput(id)" class="conf-step__radio" name="chairs-hall" value="{{ $hall->name }}" checked>
+                            <input type="radio" id="{{ $hall->id }}" data-rows="{{ $hall->row }}" data-cols="{{ $hall->col }}" onclick="radioInput(id)" class="conf-step__radio" name="{{ $hall->id }}" value="{{ $hall->name }}" checked>
                             <span class="conf-step__selector">{{ $hall->name }}</span>
                         @else
-                            <input type="radio" id="{{ $hall->id }}" data-rows="{{ $hall->row }}" data-cols="{{ $hall->col }}" onclick="radioInput(id)" class="conf-step__radio" name="chairs-hall" value="{{ $hall->name }}">
+                            <input type="radio" id="{{ $hall->id }}" data-rows="{{ $hall->row }}" data-cols="{{ $hall->col }}" onclick="radioInput(id)" class="conf-step__radio" name="{{ $hall->id }}" value="{{ $hall->name }}">
                             <span class="conf-step__selector">{{ $hall->name }}</span>
                         @endif
 
@@ -78,10 +78,9 @@
             </div>
 
             <x-admin.buttons :hall="$halls->where('id',$selected_hall)->first()" :selected_hall="$selected_hall" />
-        </form>
+        </div>
         <script>
             function radioInput(id){
-                console.log('radioInput', id);
                 let url = "{{ route('admin.index',['selected_hall' => 'id']) }}";
                 id = String(id);
                 url = url.replace('id', id);
@@ -119,8 +118,7 @@
                     }
                 }
             }
-            console.log('chairs-hall')
-            function editSeats(id) {
+            function editSeat(id) {
                 let newTypesHall = [];
                 let btnList = document.querySelector('.conf-step__hall-wrapper');
                 let btnsPlace = btnList.querySelectorAll('.conf-step__chair');
@@ -132,7 +130,12 @@
                     newTypes.value = button.dataset.type;
                     newTypesHall.push(newTypes);
                 }
-                console.log(newTypesHall);
+                let json_string = JSON.stringify(newTypesHall);
+                let url = "{{ route('admin.editHall', ['hall'=> $halls->where('id', $selected_hall)->first(), 'newTypeHall' => 'json_string']) }}"
+                url = url.replace('json_string', json_string);
+                url = url.replaceAll('&amp;', '&');
+                console.log(url)
+                window.location.href = url;
             }
         </script>
     </section>

@@ -19,7 +19,10 @@ class HallController extends Controller
      */
     public function index(Request $request)
     {
-//        dd($request['1']);
+//        dd($request);
+        $halls = DB::table('halls')->get()->sortBy('name');
+        $selected_hall = ($request->selected_hall) ?: $halls->first()->id;
+        return view('admin.index', ['halls' => $halls, 'selected_hall' => $selected_hall]);
     }
 
     /**
@@ -54,6 +57,7 @@ class HallController extends Controller
     {
         $film = $request->film ?? Film::all()->first();
         $hall = $request->hall ?? Hall::all()->first();
+//        dd($hall);
         $dateChosen = $request->dateChosen ?? substr(Carbon::now(), 0, 10);
         $seance = $request->seance ?? Seance::all()->where('seance_start', Carbon::now())->first();
         $seats = $request->seats ?? Seat::all()->where('seance_id', $seance['id'])->where('hall_id', $hall['id']);
@@ -63,17 +67,35 @@ class HallController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request)
     {
-        return "edit";
+//        dd($request->newTypeHall);
+        $id = $request->hall['id'];
+        $hallDb = DB::table('halls')
+            ->where('id', $id)
+            ->first();
+        $hallTypeNew  = json_decode($request['newTypeHall']);
+        $hall_decode = json_decode($hallDb->seats_type);
+        $i=0;
+        foreach ($hall_decode as $key => $value) {
+            $hall_decode->{$key} = $hallTypeNew[$i]->{"value"};
+            $i++;
+        }
+        $seatsType = $hallDb->seats_type = json_encode($hall_decode, JSON_THROW_ON_ERROR);
+        $hall = DB::table('halls')
+            ->where('id', $id)
+            ->update([
+                'seats_type' => $seatsType
+            ]);
+        return view('admin.index', ['selected_hall' => $id, 'hall' => $hall]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Hall $hall)
     {
-        return "up";
+        //
     }
 
     /**
