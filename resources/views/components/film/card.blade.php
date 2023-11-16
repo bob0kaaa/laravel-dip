@@ -31,7 +31,7 @@
                 <ul class="movie-seances__list">
                     @foreach($seances as $item)
                         @if($item->film_id === $film->id && $item->hall_id === $hall->id && substr($item->seance_start, 0, 10) === $dateChosen)
-                            <li class="movie-seances__time-block"><a class="movie-seances__time" href="{{ route('hall.show', ['hall' => $hall, 'seance'=> $item, 'film'=> $film, 'dateChosen'=> $dateChosen, 'seats'=> $seats->where('hall_id', $hall->id)->where('seance_id', $item->id)]) }}">{{substr($item->seance_start, -8,5)}}</a></li>
+                            <li class="movie-seances__time-block"><a class="movie-seances__time" href="{{ route('user.hall', ['hall' => $hall, 'seance'=> $item, 'film'=> $film, 'dateChosen'=> $dateChosen, 'seats'=> $seats->where('hall_id', $hall->id)->where('seance_id', $item->id)]) }}">{{substr($item->seance_start, -8,5)}}</a></li>
                         @endif
                     @endforeach
                 </ul>

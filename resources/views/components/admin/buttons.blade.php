@@ -4,9 +4,9 @@
 {{--            @php--}}
 {{--                dd(json_decode($hall->{"seats_type"}));--}}
 {{--             @endphp--}}
-            <div class="conf-step__row">
+            <div id="{{ $i }}" class="conf-step__row">
                 @for($j = 1; $j <= $hall->{'col'}; $j++)
-                    <button onclick = "select(id)" id="{{ "$i,$j" }}" data-type='{{ json_decode($hall->{"seats_type"})->{"$i,$j"} }}' type="button" class="conf-step__chair
+                    <button onclick = "select(id)" id="{{ "$i,$j" }}" data-type='{{ json_decode($hall->{"seats_type"})->{"$i,$j"} }}' type="button" class="place conf-step__chair
                     @if(json_decode($hall->{"seats_type"})->{"$i,$j"} === 'NORM')
                         conf-step__chair_standart
                     @elseif(json_decode($hall->{"seats_type"})->{"$i,$j"} === 'VIP')

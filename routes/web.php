@@ -31,8 +31,7 @@ Route::middleware('guest')->group(function () {
     Route::get('login', [LoginController::class, 'index'])->name('login');
     Route::post('login', [LoginController::class, 'store'])->name('login.store');
 });
-
-Route::get('/', [HallController::class, 'show'])->name('hall.show');
+Route::get('/hall', [HallController::class, 'show'])->name('user.hall');
 Route::get('/logout', function () {
     Auth::logout();
     return redirect('/');
