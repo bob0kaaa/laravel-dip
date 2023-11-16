@@ -23,26 +23,20 @@ class FilmController extends Controller
      */
     public function create(FilmCreateRequest $request)
     {
-
-//        if ($request->isMethod('post') && $request->file('image_path')) {
-//
-//            $file = $request->file('image_path');
-//
-//            $upload_folder = 'public/i';
-//
-//            Storage::putFileAs($upload_folder, $file, $filename);
-//
-//        }
-        $filename = $_FILES['image_path']['name'];
-        DB::table('films')->insert([
-            'title' => $request["title"],
-            'description' => $request["description"],
-            'duration' => $request["duration"] ?? 130,
-            'image_path' => 'img/'.$filename ?? 'i/poster2.jpg',
-            'image_text' => '' ?? $request["title"],
-            'origin'=> $request["origin"] ?? '',
-        ]);
-
+        $url = base_path() . '/public/upload/';
+        if( $_FILES['image_path']['name'] != "" ) {
+            $path=$_FILES['image_path']['name'];
+            $pathto=$url.$path;
+            move_uploaded_file( $_FILES['image_path']['tmp_name'],$pathto) or die( "Could not copy file!");
+            DB::table('films')->insert([
+                'title' => $request["title"],
+                'description' => $request["description"],
+                'duration' => $request["duration"] ?? 130,
+                'image_path' => '/upload/' . $path,
+                'image_text' => $request["title"],
+                'origin'=> $request["origin"] ?? '',
+            ]);
+        }
         return redirect()->back();
     }
 
