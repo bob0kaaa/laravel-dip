@@ -17,7 +17,7 @@
                     </label>
                     <div class="conf-step__buttons text-center">
                         <input type="submit" value="Добавить зал" class="conf-step__button conf-step__button-accent">
-                        <button  class="conf-step__button conf-step__button-regular">Отменить</button>
+                        <button class="conf-step__button conf-step__button-regular">Отменить</button>
                     </div>
                 </x-admin.form>
             </div>

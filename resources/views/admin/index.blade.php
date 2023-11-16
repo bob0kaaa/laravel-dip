@@ -1,5 +1,7 @@
 @extends('layouts.base')
-
+@php
+    $selected_hall = (int)$selected_hall;
+@endphp
 @section('content')
     <span class="page-header__subtitle">{{ __('Администраторррская') }}</span>
     @if(session('status'))
@@ -33,17 +35,16 @@
                 let popupCreate = section.querySelector('#popupCreatHall');
                     openButton.addEventListener('click', () => {
                         popupCreate.classList.add("active");
-                        console.log('123')
                 });
-                    function popupToggle(id){
-                        let elem = 'popup' + `${id}`;
-                        let popup = document.getElementById(elem);
-                        popup.classList.add("active");
-                    }
+                function popupToggle(id){
+                    let elem = 'popup' + `${id}`;
+                    let popup = document.getElementById(elem);
+                    popup.classList.add("active");
+                }
         </script>
     </section>
     <section class="conf-step">
-        <header class="conf-step__header conf-step__header_opened">
+        <header class="conf-step__header conf-step__header_closed">
             <h2 class="conf-step__title">{{ __('Конфигурация залов') }}</h2>
         </header>
         <div class="conf-step__wrapper">
@@ -51,17 +52,16 @@
             <ul class="conf-step__selectors-box">
                 @foreach($halls as $hall)
                     <li>
-                        @if($hall->{'id'} == $selected_hall)
-                            <input type="radio" id="{{ $hall->id }}" data-rows="{{ $hall->row }}" data-cols="{{ $hall->col }}" onclick="radioInput(id)" class="conf-step__radio" name="{{ $hall->id }}" value="{{ $hall->name }}" checked>
+                        @if($hall->{'id'} === $selected_hall)
+                            <input type="radio" id="{{ $hall->id }}" data-rows="{{ $hall->row }}" data-cols="{{ $hall->col }}" onclick="radioInput(id)" class="conf-step__radio" name="1{{ $hall->id }}" value="{{ $hall->name }}" checked>
                             <span class="conf-step__selector">{{ $hall->name }}</span>
                         @else
-                            <input type="radio" id="{{ $hall->id }}" data-rows="{{ $hall->row }}" data-cols="{{ $hall->col }}" onclick="radioInput(id)" class="conf-step__radio" name="{{ $hall->id }}" value="{{ $hall->name }}">
+                            <input type="radio" id="{{ $hall->id }}" data-rows="{{ $hall->row }}" data-cols="{{ $hall->col }}" onclick="radioInput(id)" class="conf-step__radio" name="1{{ $hall->id }}" value="{{ $hall->name }}">
                             <span class="conf-step__selector">{{ $hall->name }}</span>
                         @endif
 
                     </li>
                 @endforeach
-
             </ul>
             <p class="conf-step__paragraph">{{ __('Укажите количество рядов и максимальное количество кресел в ряду:') }}</p>
             <div class="conf-step__legend">
@@ -86,18 +86,86 @@
         <div class="conf-step__wrapper">
             <p class="conf-step__paragraph">Выберите зал для конфигурации:</p>
             <ul class="conf-step__selectors-box">
-                <li><input type="radio" class="conf-step__radio" name="prices-hall" value="Зал 1"><span class="conf-step__selector">Зал 1</span></li>
-                <li><input type="radio" class="conf-step__radio" name="prices-hall" value="Зал 2" checked><span class="conf-step__selector">Зал 2</span></li>
-            </ul>
+                @foreach($halls as $hall)
+                    <li>
+                        @if($hall->{'id'} == $selected_hall)
+                            <input type="radio" id="{{ $hall->id }}" data-rows="{{ $hall->row }}" data-cols="{{ $hall->col }}" onclick="radioInput(id)" class="conf-step__radio" name="{{ $hall->id }}" value="{{ $hall->name }}" checked>
+                            <span class="conf-step__selector">{{ $hall->name }}</span>
+                        @else
+                            <input type="radio" id="{{ $hall->id }}" data-rows="{{ $hall->row }}" data-cols="{{ $hall->col }}" onclick="radioInput(id)" class="conf-step__radio" name="{{ $hall->id }}" value="{{ $hall->name }}">
+                            <span class="conf-step__selector">{{ $hall->name }}</span>
+                        @endif
 
+                    </li>
+                @endforeach
+            </ul>
             <p class="conf-step__paragraph">Установите цены для типов кресел:</p>
             <div class="conf-step__legend">
-                <label class="conf-step__label">Цена, рублей<input type="text" class="conf-step__input" placeholder="0" ></label>
+                <label class="conf-step__label">Цена, рублей<input id="priceNormal" type="text" class="conf-step__input" placeholder="{{ $halls->where('id', $selected_hall)->first()->count_normal }}" value="{{ $halls->where('id', $selected_hall)->first()->count_normal }}"></label>
                 за <span class="conf-step__chair conf-step__chair_standart"></span> обычные кресла
             </div>
             <div class="conf-step__legend">
-                <label class="conf-step__label">Цена, рублей<input type="text" class="conf-step__input" placeholder="0" value="350"></label>
+                <label class="conf-step__label">Цена, рублей<input id="priceVip" type="text" class="conf-step__input" placeholder="{{ $halls->where('id', $selected_hall)->first()->count_vip }}" value="{{ $halls->where('id', $selected_hall)->first()->count_vip }}"></label>
                 за <span class="conf-step__chair conf-step__chair_vip"></span> VIP кресла
+            </div>
+
+            <fieldset class="conf-step__buttons text-center">
+                <button class="conf-step__button conf-step__button-regular">Отмена</button>
+                <input onclick="editPrice(id)" type="submit" value="Сохранить" class="conf-step__button conf-step__button-accent">
+            </fieldset>
+        </div>
+    </section>
+    <section class="conf-step">
+        <header class="conf-step__header conf-step__header_opened">
+            <h2 class="conf-step__title">Сетка сеансов</h2>
+        </header>
+        <div class="conf-step__wrapper">
+            <p class="conf-step__paragraph">
+                <button id="addFilm" onclick = "clickAddFilm(id)" class="conf-step__button conf-step__button-accent">Добавить фильм</button>
+            </p>
+            <div class="conf-step__movies">
+                @foreach($films as $film)
+                    <x-admin.form action="{{ route('admin.destroyFilm', ['id' => $film->id]) }}" method="delete" onsubmit="return confirm('Удалить этот фильм?')">
+                        <div id="{{ $film->id }}" class="conf-step__movie">
+                            <img class="conf-step__movie-poster" alt="poster" src="{{ $film->image_path }}">
+                            <h3 class="conf-step__movie-title">{{ $film->title }}</h3>
+                            <p class="conf-step__movie-duration">{{ $film->duration }} минут</p>
+                            <button href="#" class="task__remove visible conf-step__button conf-step__button-trash"></button>
+                        </div>
+                    </x-admin.form>
+
+                @endforeach
+
+            </div>
+
+            <div class="conf-step__seances">
+                @foreach($halls as $hall)
+                    @php
+                        $time = 0;
+                        $seancesHall = $seances->where('hall_id', $hall->id)->unique('seance_start')->sortBy('seance_start')->values()->all();
+                        $sortArraySeances = collect(\App\Models\Seance::where('hall_id', $hall->id)->get())->unique(
+                            function ($item)
+                            {
+                                return substr($item['seance_start'], -8, 5);
+                            })->sortBy('seance_start')->values()->all();
+//                        dd($sortArraySeances);
+                     @endphp
+                    <div class="conf-step__seances-hall">
+                        <h3 class="conf-step__seances-title">{{ $hall->name }}</h3>
+                        <div class="conf-step__seances-timeline">
+                            @foreach($sortArraySeances as $seance)
+                                <div class="conf-step__seances-movie" style="width: calc({{ $films->where('id', $seance->{'film_id'})->first()->duration }}px*0.5); background-color: rgb(133, 255, 137); left: {{$time}}px;">
+                                    <p class="conf-step__seances-movie-title">{{ $films->where('id', $seance->{'film_id'})->first()->title }}</p>
+                                    <p class="conf-step__seances-movie-start">{{ substr($seance->{'seance_start'}, -8, 5) }}</p>
+                                    @include('admin.delete_seance', ['seance'=> $seance, 'film'=> $films->where('id', $seance->{'film_id'})->first(), 'hall'=>$hall])
+                                </div>
+                                @php
+                                    $time += ( $films->where('id', $seance->{'film_id'})->first()->duration )/2;
+                                @endphp
+                            @endforeach
+                        </div>
+                    </div>
+                @endforeach
             </div>
 
             <fieldset class="conf-step__buttons text-center">
@@ -105,6 +173,7 @@
                 <input type="submit" value="Сохранить" class="conf-step__button conf-step__button-accent">
             </fieldset>
         </div>
+        @include('admin.add_film')
     </section>
     <script>
         function radioInput(id){
@@ -159,7 +228,40 @@
             }
             // let difference =
         });
-
+        let places = btnList.querySelectorAll('.place');
+        for (let i = 0; i < places.length; i++) {
+            let place = places[i];
+            place.addEventListener('click', () => {
+                let typePlace = place.dataset.type;
+                let typeNext;
+                let types = ['NORM', 'VIP', "FAIL"]
+                let countTypes = types.length;
+                let typeCurrent = types.indexOf(place.dataset.type);
+                for (let i = 0; i < types.length; i++) {
+                    let type = types[i];
+                    if(type === typePlace){
+                        typeNext = typeCurrent + 1;
+                        if (typeNext === countTypes) {
+                            typeNext = 0;
+                        }
+                        place.setAttribute("data-type", types[typeNext]);
+                        if(document.getElementById(place.id).dataset.type === 'VIP') {
+                            place.classList.add('conf-step__chair_vip')
+                            place.classList.remove('conf-step__chair_disabled')
+                            place.classList.remove('conf-step__chair_standart')
+                        } else if (document.getElementById(place.id).dataset.type === 'NORM') {
+                            place.classList.remove('conf-step__chair_vip')
+                            place.classList.remove('conf-step__chair_disabled')
+                            place.classList.add('conf-step__chair_standart')
+                        } else if (document.getElementById(place.id).dataset.type === 'FAIL') {
+                            place.classList.remove('conf-step__chair_vip')
+                            place.classList.add('conf-step__chair_disabled')
+                            place.classList.remove('conf-step__chair_standart')
+                        }
+                    }
+                }
+            })
+        }
         colsCount.addEventListener('change', (e) => {
             let count = colsCount.value
             console.log(count)
@@ -186,6 +288,80 @@
                 }
             }
         })
+        colsCount.addEventListener('mouseout', () => {
+            console.log('123')
+            let places = btnList.querySelectorAll('.place');
+            for (let i = 0; i < places.length; i++) {
+                let place = places[i];
+                place.addEventListener('click', () => {
+                    let typePlace = place.dataset.type;
+                    let typeNext;
+                    let types = ['NORM', 'VIP', "FAIL"]
+                    let countTypes = types.length;
+                    let typeCurrent = types.indexOf(place.dataset.type);
+                    for (let i = 0; i < types.length; i++) {
+                        let type = types[i];
+                        if(type === typePlace){
+                            typeNext = typeCurrent + 1;
+                            if (typeNext === countTypes) {
+                                typeNext = 0;
+                            }
+                            place.setAttribute("data-type", types[typeNext]);
+                            if(document.getElementById(place.id).dataset.type === 'VIP') {
+                                place.classList.add('conf-step__chair_vip')
+                                place.classList.remove('conf-step__chair_disabled')
+                                place.classList.remove('conf-step__chair_standart')
+                            } else if (document.getElementById(place.id).dataset.type === 'NORM') {
+                                place.classList.remove('conf-step__chair_vip')
+                                place.classList.remove('conf-step__chair_disabled')
+                                place.classList.add('conf-step__chair_standart')
+                            } else if (document.getElementById(place.id).dataset.type === 'FAIL') {
+                                place.classList.remove('conf-step__chair_vip')
+                                place.classList.add('conf-step__chair_disabled')
+                                place.classList.remove('conf-step__chair_standart')
+                            }
+                        }
+                    }
+                })
+            }
+        })
+        rowsCount.addEventListener('mouseout', () => {
+            console.log('123')
+            let places = btnList.querySelectorAll('.place');
+            for (let i = 0; i < places.length; i++) {
+                let place = places[i];
+                place.addEventListener('click', () => {
+                    let typePlace = place.dataset.type;
+                    let typeNext;
+                    let types = ['NORM', 'VIP', "FAIL"]
+                    let countTypes = types.length;
+                    let typeCurrent = types.indexOf(place.dataset.type);
+                    for (let i = 0; i < types.length; i++) {
+                        let type = types[i];
+                        if(type === typePlace){
+                            typeNext = typeCurrent + 1;
+                            if (typeNext === countTypes) {
+                                typeNext = 0;
+                            }
+                            place.setAttribute("data-type", types[typeNext]);
+                            if(document.getElementById(place.id).dataset.type === 'VIP') {
+                                place.classList.add('conf-step__chair_vip')
+                                place.classList.remove('conf-step__chair_disabled')
+                                place.classList.remove('conf-step__chair_standart')
+                            } else if (document.getElementById(place.id).dataset.type === 'NORM') {
+                                place.classList.remove('conf-step__chair_vip')
+                                place.classList.remove('conf-step__chair_disabled')
+                                place.classList.add('conf-step__chair_standart')
+                            } else if (document.getElementById(place.id).dataset.type === 'FAIL') {
+                                place.classList.remove('conf-step__chair_vip')
+                                place.classList.add('conf-step__chair_disabled')
+                                place.classList.remove('conf-step__chair_standart')
+                            }
+                        }
+                    }
+                })
+            }
+        })
         let placesBtns = document.querySelectorAll('.place')
         for (let i = 0; i < placesBtns.length; i++) {
             let place = placesBtns[i];
@@ -203,11 +379,10 @@
             let countRow = document.getElementById('rowsHall').value;
             let count_row_col = [countCol,countRow];
             let json_row_col = JSON.stringify(count_row_col);
-            console.log(count_row_col);
             let btnsPlace = btnList.querySelectorAll('.conf-step__chair');
             for (let i = 0; i < btnsPlace.length; i++) {
                 let button = btnsPlace[i];
-                let id = button.id
+                let id = button.id;
                 newTypesHall[id] = button.dataset.type;
             }
             let json_string = JSON.stringify(newTypesHall);
@@ -217,6 +392,24 @@
             url = url.replaceAll('&amp;', '&');
             console.log(url)
             window.location.href = url;
+        }
+
+        function editPrice(id) {
+            let priceNormal = document.getElementById('priceNormal').value;
+            let priceVip = document.getElementById('priceVip').value;
+            let prices_normal_vip = [priceNormal,priceVip];
+            console.log(prices_normal_vip)
+            let json_prices = JSON.stringify(prices_normal_vip);
+            let url = "{{ route('admin.editPriceHall', ['hall'=> $halls->where('id', $selected_hall)->first(), 'json_price' => 'json_prices']) }}"
+            url = url.replace('json_prices', json_prices);
+            url = url.replaceAll('&amp;', '&');
+            console.log(url)
+            window.location.href = url;
+        }
+
+        function clickAddFilm(id){
+            console.log(id)
+            document.getElementById('popupAddFilm').classList.add('active');
         }
     </script>
 @endsection

@@ -76,7 +76,9 @@ input[type='radio'], input[type='submit'], button, .conf-step__header, select {
 
 .conf-step__header_closed::after {
   transform: rotate(-90deg); }
-
+main{
+  position: relative;
+}
 .conf-step__header {
   position: relative;
   box-sizing: border-box;
@@ -152,10 +154,15 @@ input[type='radio'], input[type='submit'], button, .conf-step__header, select {
   display: none; }
 
 .conf-step__paragraph {
-  font-size: 1.6rem;
+  font-size: 2.6rem;
   font-weight: 400;
   color: #000000;
-  margin-bottom: 12px; }
+  margin-bottom: 12px;
+  width: 100%;
+  /*background-color: red;*/
+  color: #fff;
+
+}
 
 .conf-step__paragraph:not(:first-of-type) {
   margin-top: 35px; }
@@ -373,12 +380,14 @@ input[type='radio'], input[type='submit'], button, .conf-step__header, select {
       margin-left: 10px; }
 
 .conf-step__movies {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
   flex-wrap: wrap;
   align-items: flex-start; }
   .conf-step__movies .conf-step__movie {
     position: relative;
-    width: calc((100% - 30px) / 3);
+    /*width: calc((100% - 30px) / 3);*/
     min-height: 52px;
     padding: 8px 8px 8px 48px;
     background: #FFEB85;
@@ -414,6 +423,7 @@ input[type='radio'], input[type='submit'], button, .conf-step__header, select {
     width: 38px;
     height: 50px; }
   .conf-step__movies .conf-step__movie-title {
+    min-height: 34px;
     font-weight: 500;
     font-size: 1.4rem; }
   .conf-step__movies .conf-step__movie-duration {
@@ -448,7 +458,7 @@ input[type='radio'], input[type='submit'], button, .conf-step__header, select {
     height: 100%; }
   .conf-step__seances-movie .conf-step__seances-movie-start {
     position: absolute;
-    bottom: -33px;
+    bottom: -41px;
     left: -14px;
     color: #848484;
     font-size: 1.2rem; }

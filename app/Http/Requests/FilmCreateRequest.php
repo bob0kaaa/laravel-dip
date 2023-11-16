@@ -14,7 +14,7 @@ class FilmCreateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -29,8 +29,8 @@ class FilmCreateRequest extends FormRequest
             'description' => ['string', 'required'],
             'duration' => ['integer', 'required', 'max:200'],
             'origin' => ['string', 'required' ],
-            'imageText' => ['string'],
-            'imagePath' => ['file', 'required'],
+            'image_text' => ['string'],
+            'image_path' => ['file', 'required'],
         ];
     }
     public function failedValidation(Validator $validator)

@@ -8,17 +8,19 @@
                         <button onclick = "cl(id)" id="{{$item['row_number']}},{{$item['col_number']}}" type="button" class="buying-scheme__chair buying-scheme__chair_taken">
                     @else
                         @php
-                            $ij = $item['row_number'].",".$item['col_number'];
+                            $plice = $item['row_number'].",".$item['col_number'];
+//                            dd(json_decode($hall['seats_type'])->{$plice});
                         @endphp
-                        @switch(json_decode($hall['seats_type'])->{$ij})
+                        @switch(json_decode($hall['seats_type'])->{$plice})
                             @case('VIP')
                                 <button onclick = "cl(id)" id="{{$item['row_number']}},{{$item['col_number']}}" type="button" class="buying-scheme__chair buying-scheme__chair_vip">
                                 @break
                             @case('FAIL')
                                 <button id="{{$item['row_number']}},{{$item['col_number']}}" type="button" class="buying-scheme__chair buying-scheme__chair_disabled">
                                 @break
-                            @default
+                            @case('NORM')
                                 <button onclick = "cl(id)" id="{{$item['row_number']}},{{$item['col_number']}}" type="button" class="buying-scheme__chair buying-scheme__chair_standart">
+                                @break
                         @endswitch
                     @endif
                 @endforeach

@@ -17,8 +17,10 @@ class AdminController extends Controller
     {
 //        dd($request);
         $halls = DB::table('halls')->get()->sortBy('name');
+        $films = DB::table('films')->get();
+        $seances = DB::table('seances')->get();
         $selected_hall = ($request->selected_hall) ?: $halls->first()->id;
-        return view('admin.index', ['halls' => $halls, 'selected_hall' => $selected_hall]);
+        return view('admin.index', ['halls' => $halls, 'selected_hall' => $selected_hall, 'films' => $films, 'seances' => $seances]);
     }
 
     /**

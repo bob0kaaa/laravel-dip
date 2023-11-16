@@ -23,24 +23,23 @@ class FilmController extends Controller
      */
     public function create(FilmCreateRequest $request)
     {
-        if ($request->isMethod('post') && $request->file('imagePath')) {
 
-            $file = $request->file('imagePath');
-
-            $upload_folder = 'public/i';
-            $filename = $file->getClientOriginalName(); // image.jpg
-
-            //dump($filename);
-            Storage::putFileAs($upload_folder, $file, $filename);
-
-        }
-
+//        if ($request->isMethod('post') && $request->file('image_path')) {
+//
+//            $file = $request->file('image_path');
+//
+//            $upload_folder = 'public/i';
+//
+//            Storage::putFileAs($upload_folder, $file, $filename);
+//
+//        }
+        $filename = $_FILES['image_path']['name'];
         DB::table('films')->insert([
             'title' => $request["title"],
             'description' => $request["description"],
             'duration' => $request["duration"] ?? 130,
-            'imagePath' => '/storage/i/'.$filename ?? 'i/poster2.jpg',//$request->imagePath ?? 'i/poster2.jpg',//$path = $request->photo->storeAs('images', 'filename.jpg');
-            'imageText' => '' ?? $request["title"],
+            'image_path' => 'img/'.$filename ?? 'i/poster2.jpg',
+            'image_text' => '' ?? $request["title"],
             'origin'=> $request["origin"] ?? '',
         ]);
 

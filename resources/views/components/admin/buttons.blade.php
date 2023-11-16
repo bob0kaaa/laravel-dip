@@ -1,9 +1,6 @@
 <div class="conf-step__hall">
     <div class="conf-step__hall-wrapper">
         @for ($i = 1; $i <= $hall->{'row'}; $i++)
-{{--            @php--}}
-{{--                dd(json_decode($hall->{"seats_type"}));--}}
-{{--             @endphp--}}
             <div id="{{ $i }}" class="conf-step__row">
                 @for($j = 1; $j <= $hall->{'col'}; $j++)
                     <button onclick = "select(id)" id="{{ "$i,$j" }}" data-type='{{ json_decode($hall->{"seats_type"})->{"$i,$j"} }}' type="button" class="place conf-step__chair
