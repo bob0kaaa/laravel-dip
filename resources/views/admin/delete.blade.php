@@ -4,7 +4,7 @@
             <div class="popup__header">
                 <h2 class="popup__title">
                     Удаление зала
-                    <a class="popup__dismiss" href="#"><img src="img/close.png" alt="Закрыть"></a>
+                    <a closePopup(id) class="popup__dismiss" href="#"><img src="img/close.png" alt="Закрыть"></a>
                 </h2>
 
             </div>

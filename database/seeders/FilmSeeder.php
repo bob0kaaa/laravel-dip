@@ -19,7 +19,7 @@ class FilmSeeder extends Seeder
             'duration' => 130,
             'origin' => 'CША',
             'image_text' => 'Звёздные войны постер',
-            'image_path' => 'img/poster1.jpg'
+            'image_path' => 'upload/o39LIqqUuRCHss3PefRP6gEbW64i5nS9F7oynx24.png'
         ]);
 
         DB::table('films')->insert([
@@ -28,7 +28,7 @@ class FilmSeeder extends Seeder
             'duration' => 96,
             'origin' => 'Франция',
             'image_text' => 'Альфа постер',
-            'image_path' => 'img/poster2.jpg'
+            'image_path' => 'upload/TI2H5V1Th3oqX8KxIpun8QawgBJx7tCWEWNQIswg.jpg'
         ]);
 
         DB::table('films')->insert([
@@ -37,7 +37,7 @@ class FilmSeeder extends Seeder
             'duration' => 101,
             'origin' => 'Канада, CША',
             'image_text' => 'Хищник постер',
-            'image_path' => 'img/poster1.jpg'
+            'image_path' => 'upload/lAeXF50Y6yA0HS5NplyYdsdGN2nMeVQJHJK1PfMw.png'
         ]);
     }
 }

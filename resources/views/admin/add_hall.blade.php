@@ -5,7 +5,7 @@
             <div class="popup__header">
                 <h2 class="popup__title">
                     Добавление зала
-                    <a class="popup__dismiss" href="#"><img src="img\close.png" alt="Закрыть"></a>
+                    <a class="popup__dismiss" onclick="closePopup(id)" href="#"><img src="img\close.png" alt="Закрыть"></a>
                 </h2>
 
             </div>

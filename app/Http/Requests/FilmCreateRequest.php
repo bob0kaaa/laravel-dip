@@ -14,6 +14,7 @@ class FilmCreateRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        // Сделать проверку на авторизацию
         return true;
     }
 

@@ -32,12 +32,8 @@ class HallController extends Controller
      */
     public function create(Request $request)
     {
-
-        $validated = $request->validate([
-            'name' => 'required|max:6',
-        ]);
          Hall::query()->create([
-           'name' =>  $validated['name'],
+           'name' =>  $request['name'],
         ]);
 
         return redirect()->route('admin.index');

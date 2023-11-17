@@ -6,7 +6,6 @@ use App\Http\Requests\FilmCreateRequest;
 use App\Models\Film;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class FilmController extends Controller
 {
@@ -23,23 +22,22 @@ class FilmController extends Controller
      */
     public function create(FilmCreateRequest $request)
     {
-        $url = base_path() . '/public/upload/';
-        if( $_FILES['image_path']['name'] != "" ) {
-            $path=$_FILES['image_path']['name'];
-            $pathto=$url.$path;
-            move_uploaded_file( $_FILES['image_path']['tmp_name'],$pathto) or die( "Could not copy file!");
-            DB::table('films')->insert([
-                'title' => $request["title"],
-                'description' => $request["description"],
-                'duration' => $request["duration"] ?? 130,
-                'image_path' => '/upload/' . $path,
-                'image_text' => $request["title"],
-                'origin'=> $request["origin"] ?? '',
-            ]);
-        }
+
+        $path = $request->file('image_path')->store('upload');
+        $params = $request->all();
+//        dd($params);
+        DB::table('films')->insert([
+            'title' => $params['title'],
+            'description' => $params['description'],
+            'duration' => $params['duration'],
+            'origin' => $params['origin'],
+            'image_path' => $path,
+            'image_text' => 'poster film ' . 'title',
+        ]);
+
         return redirect()->back();
     }
-
+//return redirect()->back();
     /**
      * Store a newly created resource in storage.
      */
@@ -59,9 +57,10 @@ class FilmController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request)
     {
-        //
+//        dd($request);
+        return view('admin.edit_film');
     }
 
     /**
@@ -69,7 +68,8 @@ class FilmController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        dd($request);
+        dd($id);
     }
 
     /**

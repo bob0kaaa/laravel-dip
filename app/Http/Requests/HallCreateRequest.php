@@ -6,7 +6,6 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Http\Response;
 
 class HallCreateRequest extends FormRequest
 {
@@ -15,6 +14,7 @@ class HallCreateRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        // Сделать проверку на авторизацию
         return true;
     }
 
@@ -26,7 +26,14 @@ class HallCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string'],
+            'name' => ['required', 'string', 'max:3'],
         ];
+    }
+
+    public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            response($validator->errors(), 400)
+        );
     }
 }

@@ -125,15 +125,15 @@
             </p>
             <div class="conf-step__movies">
                 @foreach($films as $film)
-                    <x-admin.form action="{{ route('admin.destroyFilm', ['id' => $film->id]) }}" method="delete" onsubmit="return confirm('Удалить этот фильм?')">
-                        <div id="{{ $film->id }}" class="conf-step__movie">
-                            <img class="conf-step__movie-poster" alt="poster" src="{{ $film->image_path }}">
+                        <div id="{{ $film->id }}" class="film conf-step__movie">
+                            <x-admin.form action="{{ route('admin.destroyFilm', ['id' => $film->id]) }}" method="delete" onsubmit="return confirm('Удалить этот фильм?')">
+                            <img class="conf-step__movie-poster" alt="{{ $film->image_text }}" src="{{ Storage::url($film->image_path) }}">
                             <h3 class="conf-step__movie-title">{{ $film->title }}</h3>
                             <p class="conf-step__movie-duration">{{ $film->duration }} минут</p>
                             <button href="#" class="task__remove visible conf-step__button conf-step__button-trash"></button>
+                            </x-admin.form>
+                            <button id="film-{{ $film->id }}" onclick="editFilm(id)" class="conf-step__button" style="margin-top: 10px; padding: 5px;">Изменить</button>
                         </div>
-                    </x-admin.form>
-
                 @endforeach
 
             </div>
@@ -148,13 +148,12 @@
                             {
                                 return substr($item['seance_start'], -8, 5);
                             })->sortBy('seance_start')->values()->all();
-//                        dd($sortArraySeances);
                      @endphp
                     <div class="conf-step__seances-hall">
                         <h3 class="conf-step__seances-title">{{ $hall->name }}</h3>
                         <div class="conf-step__seances-timeline">
                             @foreach($sortArraySeances as $seance)
-                                <div id="{{ $seance->id }}" class="conf-step__seances-movie" style="width: calc({{ $films->where('id', $seance->{'film_id'})->first()->duration }}px*0.5); background-color: rgb(133, 255, 137); left: {{$time}}px;">
+                                <div id="{{ $seance->id }}" class="seance conf-step__seances-movie" style="width: calc({{ $films->where('id', $seance->{'film_id'})->first()->duration }}px*0.5); background-color: rgb(133, 255, 137); left: {{$time}}px;">
                                     <p class="conf-step__seances-movie-title">{{ $films->where('id', $seance->{'film_id'})->first()->title }}</p>
                                     <p class="conf-step__seances-movie-start">{{ substr($seance->{'seance_start'}, -8, 5) }}</p>
                                     <button id="{{$seance->id}}_{{ $films->where('id', $seance->{'film_id'})->first()->id }}" onclick="deleteSeance(id)" href="#" class="task__remove visible conf-step__button conf-step__button-trash"></button>
@@ -410,16 +409,30 @@
             document.getElementById('popupAddFilm').classList.add('active');
         }
 
-       let btnSeanceFilm = document.querySelectorAll('.conf-step__seances-movie')
+       let btnSeanceFilm = document.querySelectorAll('.seance')
         for (let i = 0; i < btnSeanceFilm.length; i++) {
             let btn = btnSeanceFilm[i];
             btn.addEventListener('dblclick', () => {
                 console.log(btn.id)
+                console.log('seance')
             })
         }
-        function deleteSeance(id){
+
+        function deleteSeance(id) {
             let popup = document.getElementById(`popup-${id}`);
             popup.classList.add('active');
+        }
+
+        function editFilm(id){
+           let popup = document.getElementById(`edit-${id}`);
+           console.log(id)
+           console.log(popup)
+            popup.classList.add('active');
+        }
+
+        function closePopup(id) {
+            console.log(id)
+            document.getElementById(id).classList.remove('active');
         }
     </script>
 @endsection

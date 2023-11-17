@@ -1,5 +1,5 @@
-{{-- Меню popup добавления фильма--}}
-<div id="popupAddFilm" class="popup">
+{{-- Меню popup изменение фильма--}}
+<div id="edit-film" class="popup">
     <div class="popup__container">
         <div class="popup__content">
             <div class="popup__header">
@@ -10,7 +10,7 @@
 
             </div>
             <div class="popup__wrapper">
-                <form action="{{route('admin.createFilm')}}" method="POST" accept-charset="utf-8" enctype="multipart/form-data">
+                <form action="{{route('admin.update'), ['film' => $film]}}" method="POST" accept-charset="utf-8" enctype="multipart/form-data">
                     @csrf
 
                     <label class="conf-step__label conf-step__label-fullsize" for="title">
@@ -39,7 +39,7 @@
 
                     <div class="conf-step__buttons text-center">
                         <input type="submit" value="Добавить фильм" class="conf-step__button conf-step__button-accent">
-                        <button id="cancel" onclick = "cl2(id)" class="conf-step__button conf-step__button-regular">Отменить</button>
+                        <button id="cancel" onclick = "closePopup(id)" class="conf-step__button conf-step__button-regular">Отменить</button>
                     </div>
                 </form>
             </div>

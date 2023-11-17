@@ -20,6 +20,7 @@ Route::prefix('admin')->middleware(['auth', 'role'])->group(function (){
     Route::any('/editPriceHall', [HallController::class, 'editPriceHall'])->name('admin.editPriceHall');
 
     Route::any('/createFilm', [FilmController::class, 'create'])->name('admin.createFilm');
+    Route::any('#editFilm', [FilmController::class, 'edit'])->name('admin.editFilm');
     Route::any('/destroyFilm/{id}', [FilmController::class, 'destroy'])->name('admin.destroyFilm');
     Route::any('/createseance', [SeanceController::class, 'create'])->name('admin.createseance');
     Route::any('/createSeats', [SeatController::class, 'create'])->name('admin.createSeat');
