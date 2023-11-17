@@ -154,9 +154,10 @@
                         <h3 class="conf-step__seances-title">{{ $hall->name }}</h3>
                         <div class="conf-step__seances-timeline">
                             @foreach($sortArraySeances as $seance)
-                                <div class="conf-step__seances-movie" style="width: calc({{ $films->where('id', $seance->{'film_id'})->first()->duration }}px*0.5); background-color: rgb(133, 255, 137); left: {{$time}}px;">
+                                <div id="{{ $seance->id }}" class="conf-step__seances-movie" style="width: calc({{ $films->where('id', $seance->{'film_id'})->first()->duration }}px*0.5); background-color: rgb(133, 255, 137); left: {{$time}}px;">
                                     <p class="conf-step__seances-movie-title">{{ $films->where('id', $seance->{'film_id'})->first()->title }}</p>
                                     <p class="conf-step__seances-movie-start">{{ substr($seance->{'seance_start'}, -8, 5) }}</p>
+                                    <button id="{{$seance->id}}_{{ $films->where('id', $seance->{'film_id'})->first()->id }}" onclick="deleteSeance(id)" href="#" class="task__remove visible conf-step__button conf-step__button-trash"></button>
                                     @include('admin.delete_seance', ['seance'=> $seance, 'film'=> $films->where('id', $seance->{'film_id'})->first(), 'hall'=>$hall])
                                 </div>
                                 @php
@@ -369,9 +370,6 @@
 
             })
         }
-        function select(id){
-
-        }
 
         function editSeat(id) {
             let newTypesHall = {};
@@ -410,6 +408,18 @@
         function clickAddFilm(id){
             console.log(id)
             document.getElementById('popupAddFilm').classList.add('active');
+        }
+
+       let btnSeanceFilm = document.querySelectorAll('.conf-step__seances-movie')
+        for (let i = 0; i < btnSeanceFilm.length; i++) {
+            let btn = btnSeanceFilm[i];
+            btn.addEventListener('dblclick', () => {
+                console.log(btn.id)
+            })
+        }
+        function deleteSeance(id){
+            let popup = document.getElementById(`popup-${id}`);
+            popup.classList.add('active');
         }
     </script>
 @endsection

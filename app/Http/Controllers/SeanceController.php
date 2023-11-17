@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Film;
 use App\Models\Seance;
 use App\Models\Seat;
+use App\Models\Ticket;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -126,24 +128,15 @@ class SeanceController extends Controller
      */
     public function destroy(string $id)
     {
-        $seance = Seance::find($id);
-        $unique = Seance::all()->where('film_id', $seance['film_id'])->where('hall_id', $seance['hall_id'])->values();
-        $unique2= Seance::all()->where('film_id', $seance['film_id'])->where('hall_id', $seance['hall_id'])->unique(function ($item, $key) {
-            return substr($item['startSeance'], -8, 5);
-        });// все уникальные сеансы в зале с выбранным фильмом
-        $r = Seance::all()->where('film_id', $seance['film_id'])->where('hall_id', $seance['hall_id'])->pluck('startSeance');
-        $ss=[];//
-        for($i=0; $i<count($r); $i++){
-            if (substr($r[$i], -8,5) == substr($seance['startSeance'], -8,5)){
-                array_push($ss,$unique[$i] );
-            }
-        }
-        foreach($ss as $seance) {
-            $seance->seats()->delete();
-            $seance->tickets()->delete();
-            $seance->delete();
-        }
 
-        return redirect()->route('admin.home');
+        $tickets = DB::table('tickets')
+            ->where('seance_id', $id)
+            ->first();
+
+        if ($tickets !== null) {
+             return redirect()->back()->with('status','Ошибка удаления : на сеанс забронированы билеты');
+        }
+        Seance::find($id)->delete();
+        return redirect()->back();
     }
 }

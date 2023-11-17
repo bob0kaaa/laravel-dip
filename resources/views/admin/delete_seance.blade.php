@@ -1,4 +1,4 @@
-<div id="{{$seance->id}}_{{$film->id}}" class="popup">
+<div id="popup-{{$seance->id}}_{{$film->id}}" class="popup">
     <div class="popup__container">
         <div class="popup__content">
             <div class="popup__header">
