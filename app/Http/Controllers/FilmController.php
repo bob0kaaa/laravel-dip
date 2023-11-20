@@ -59,17 +59,33 @@ class FilmController extends Controller
      */
     public function edit(Request $request)
     {
-//        dd($request);
-        return view('admin.edit_film');
+//        $id = $request->all()['film']['id'];
+//        $film = DB::table('films')->where('id', $id)->first();
+//        return view('admin.edit_film', ['film' => $film]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
-        dd($request);
-        dd($id);
+        $id = $request->query->all()['id'];
+        $imagePath = $request->all()['film']['image_path'];
+        if( count($request->files) !== 0) {
+            $imagePath = $request->all()['image_path']->store('upload');
+        }
+
+        DB::table('films')
+            ->where('id', $id)
+            ->update([
+                'title' => $request->all()['title'],
+                'description' => $request->all()['description'],
+                'duration' => $request->all()['duration'],
+                'image_path' => $imagePath,
+                'origin' => $request->all()['origin'],
+            ]);
+
+        return redirect()->back();
     }
 
     /**

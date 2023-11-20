@@ -80,9 +80,7 @@ class HallController extends Controller
                 'col' => $json_seat[0],
                 'row' => $json_seat[1],
             ]);
-        $halls = DB::table('halls')->get()->sortBy('name');
-        $selected_hall = (int)$id;
-        return view('admin.index', ['selected_hall' => $selected_hall, 'halls' => $halls]);
+        return redirect()->back();
     }
 
     public function editPriceHall(Request $request)
@@ -96,8 +94,7 @@ class HallController extends Controller
                 'count_vip' => $json_price[1],
                 'count_normal' => $json_price[0],
             ]);
-        $halls = DB::table('halls')->get()->sortBy('name');
-        return view('admin.index', ['selected_hall' => $id, 'halls' => $halls]);
+        return redirect()->back();
     }
 
     /**

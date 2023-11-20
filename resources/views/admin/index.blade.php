@@ -1,6 +1,9 @@
 @extends('layouts.base')
 @php
-    $selected_hall = (int)$selected_hall;
+    if ($selected_hall !== null) {
+         $selected_hall = (int)$selected_hall;
+    }
+
 @endphp
 @section('content')
     <span class="page-header__subtitle">{{ __('Администраторррская') }}</span>
@@ -10,7 +13,7 @@
         </div>
     @endif
     <section id="creatHall" class="conf-step">
-        <header class="conf-step__header conf-step__header_closed">
+        <header class="conf-step__header conf-step__header_opened">
             <h2 class="conf-step__title">{{ __('Управление залами') }}</h2>
         </header>
         <div class="conf-step__wrapper">
@@ -44,7 +47,7 @@
         </script>
     </section>
     <section class="conf-step">
-        <header class="conf-step__header conf-step__header_closed">
+        <header class="conf-step__header conf-step__header_opened">
             <h2 class="conf-step__title">{{ __('Конфигурация залов') }}</h2>
         </header>
         <div class="conf-step__wrapper">
@@ -80,7 +83,7 @@
         </div>
     </section>
     <section class="conf-step">
-        <header class="conf-step__header conf-step__header_closed">
+        <header class="conf-step__header conf-step__header_opened">
             <h2 class="conf-step__title">Конфигурация цен</h2>
         </header>
         <div class="conf-step__wrapper">
@@ -132,7 +135,12 @@
                             <p class="conf-step__movie-duration">{{ $film->duration }} минут</p>
                             <button href="#" class="task__remove visible conf-step__button conf-step__button-trash"></button>
                             </x-admin.form>
-                            <button id="film-{{ $film->id }}" onclick="editFilm(id)" class="conf-step__button" style="margin-top: 10px; padding: 5px;">Изменить</button>
+                            <div style="margin-top: 10px;">
+                                <button id="film-{{ $film->id }}" onclick="editFilm(id)" class="conf-step__button" style="margin-top: 10px; padding: 5px;">Изменить</button>
+                                <button id="film-{{ $film->id }}" onclick="addSeance(id)" class="conf-step__button" style="margin-top: 10px; padding: 5px;">+</button>
+                            </div>
+                            @include('admin.edit_film', ['film' => $film])
+                            @include('admin.add_seance', ['film' => $film, 'halls' => $halls])
                         </div>
                 @endforeach
 
@@ -278,7 +286,7 @@
                     col.classList.add('conf-step__chair');
                     col.classList.add('conf-step__chair_standart');
                     col.id = rows[i].id +',' + j;
-                    col.onclick = select(rows[i].id +',' + j);
+                    // col.onclick = select(rows[i].id +',' + j);
                     rows[i].appendChild(col);
                     console.log(rows[i].querySelectorAll('.place').length)
                     console.log(colsCount.value)
@@ -366,7 +374,34 @@
         for (let i = 0; i < placesBtns.length; i++) {
             let place = placesBtns[i];
             place.addEventListener('click', () => {
-
+                let typePlace = place.dataset.type;
+                let typeNext;
+                let types = ['NORM', 'VIP', "FAIL"]
+                let countTypes = types.length;
+                let typeCurrent = types.indexOf(place.dataset.type);
+                for (let i = 0; i < types.length; i++) {
+                    let type = types[i];
+                    if(type === typePlace){
+                        typeNext = typeCurrent + 1;
+                        if (typeNext === countTypes) {
+                            typeNext = 0;
+                        }
+                        place.setAttribute("data-type", types[typeNext]);
+                        if(document.getElementById(place.id).dataset.type === 'VIP') {
+                            place.classList.add('conf-step__chair_vip')
+                            place.classList.remove('conf-step__chair_disabled')
+                            place.classList.remove('conf-step__chair_standart')
+                        } else if (document.getElementById(place.id).dataset.type === 'NORM') {
+                            place.classList.remove('conf-step__chair_vip')
+                            place.classList.remove('conf-step__chair_disabled')
+                            place.classList.add('conf-step__chair_standart')
+                        } else if (document.getElementById(place.id).dataset.type === 'FAIL') {
+                            place.classList.remove('conf-step__chair_vip')
+                            place.classList.add('conf-step__chair_disabled')
+                            place.classList.remove('conf-step__chair_standart')
+                        }
+                    }
+                }
             })
         }
 
@@ -428,12 +463,22 @@
            console.log(id)
            console.log(popup)
             popup.classList.add('active');
+            console.log();
+            popup.querySelector('#dismiss2').addEventListener('click', () => {
+                popup.classList.remove('active');
+            })
         }
 
-        function closePopup(id) {
-            console.log(id)
-            document.getElementById(id).classList.remove('active');
+        function addSeance(id) {
+            console.log(id);
+            let popup = document.getElementById(`addSeance-${id}`);
+            popup.classList.add('active');
+            popup.querySelector('#dismiss3').addEventListener('click', () => {
+                popup.classList.remove('active');
+            })
         }
+
+
     </script>
 @endsection
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SeanceCreateRequest;
 use App\Models\Film;
 use App\Models\Seance;
 use App\Models\Seat;
@@ -23,72 +24,20 @@ class SeanceController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        $open= $request->open ?? 0;
-        $selected_hall= $request->hall->{'id'} ?? '1';
-        $seance_id_last= Seance::all()->last()->id;
-        $data = explode(" ", Carbon::now());
-        $data[1]=$request['start_seance'];
-        $data = implode(" ", $data);
-        DB::table('seances')->insert([
-            'film_id' => $request['film_id'],
-            'hall_id' => $request['hall_id'],
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
-            'startSeance'=> $data,
+//        dd($request);
+//        $data = explode(" ", Carbon::now());
+//        $data[1]=$request['seance_start'];
+//        $data = implode(" ", $data);
+        Seance::query()->create([
+            'hall_id' => $request->all()['hall_id'],
+            'film_id' => $request->all()['film_id'],
+//            'created_at' => Carbon::now(),
+//            'updated_at' => Carbon::now(),
+            'seance_start' => $request['seance_start'],
         ]);
-        $seance =  Seance::all()->last();
-        $hall = Hall::all()->where('id', $seance['hall_id'])->first();
-
-        for ($i = 1; $i <= $hall['row']; $i++) {
-            for ($j = 1; $j <= $hall['col']; $j++) {
-                $seat = new Seat();
-                $seat->hall_id = $seance['hall_id'];
-                $seat->colNumber = $j;
-                $seat->rowNumber = $i;
-                $seat->ticket_id = 0;
-                $seat->seance_id = $seance['id'];
-                $seat->free = true;
-
-                $seance->seats()->save($seat);
-            }
-        }
-        if($request['confStep']) {
-            $confStep = $request['confStep'];
-        } else {
-            $confStep = ['conf-step__header_closed', 'conf-step__header_closed', 'conf-step__header_closed', 'conf-step__header_opened', 'conf-step__header_closed'];
-        }
-
-        for ($dn = 1; $dn <= 13; $dn++) {
-            $data = explode(" ", Carbon::now()->addDays($dn));
-            $data[1] = $request['start_seance'];
-            $data = implode(" ", $data);
-
-            DB::table('seances')->insert([
-                'film_id' => $request['film_id'],// не нужно, опрределяем через seance
-                'hall_id' => $request['hall_id'],
-                'created_at' => Carbon::now()->addMinute(), //date("Y-m-d H:i:s"),//Carbon::now()
-                'updated_at' => Carbon::now()->addMinute(),//date("Y-m-d H:i:s"),//Carbon::now()
-                'seance_start' => $data,
-            ]);
-
-            $seance = Seance::all()->last();
-            $hall = $seance->hall;
-            for ($ii = 1; $ii <= $hall['row']; $ii++) {
-                for ($jj = 1; $jj <= $hall['col']; $jj++) {
-                    $seat = new Seat();
-                    $seat->hall_id = $seance['hall_id'];
-                    $seat->col_number = $jj;// $seat->colNumber= Hall::all()->where('id', $seance['hall_id'])->col;
-                    $seat->row_number = $ii; //Hall::all()->where('id', $seance['hall_id'])->row;
-                    $seat->ticket_id = 0;
-                    $seat->seance_id = $seance['id'];//Seance::all()->last()->id;
-                    $seat->free = true;
-                    $seance->seats()->save($seat);
-                }
-            }
-        }
-        return redirect()->route('admin.index', ['confStep'=> $confStep, 'open'=> $open, 'selected_hall' => $selected_hall]);
+        return redirect()->back();
     }
 
     /**
