@@ -9,7 +9,6 @@
 #### PHPQrCode,
 #### PostgreSQL
 
-
 ### Сущности
 
 #### Кинозал (таблица halls)
