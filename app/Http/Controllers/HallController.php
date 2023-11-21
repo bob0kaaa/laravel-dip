@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Film;
 use App\Models\Hall;
-use App\Models\seance;
+use App\Models\Seance;
 use App\Models\Seat;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -32,9 +32,15 @@ class HallController extends Controller
      */
     public function create(Request $request)
     {
-         Hall::query()->create([
-           'name' =>  $request['name'],
+//        dd($request);
+        $createHall = DB::table('halls', $request['name'])->where('name', $request['name'])->get();
+        if (count($createHall) !== 0) {
+            return redirect()->back()->with('status','Ошибка зал с именем ' . $request['name'] . ' уже существует');
+        }
+        Hall::query()->create([
+            'name' =>  $request['name'],
         ]);
+
 
         return redirect()->route('admin.index');
     }
@@ -118,5 +124,38 @@ class HallController extends Controller
        }
         return redirect()->back()->with('status','Ошибка удаления : В зале ' .$hall->name .' существуют сеансы');
 
+    }
+
+    public function open($param)
+    {
+        $myArray = explode(',', $param);
+        for ($i = 0; $i < count($myArray); $i++) {
+            $elem = $myArray[$i];
+            if($elem > 0){
+                DB::table('halls')
+                    ->where('id', $elem)
+                    ->update([
+                        'open' => true,
+                    ]);
+            }
+        }
+        return redirect()->back();
+    }
+
+    public function close($param)
+    {
+//        dd($param);
+        $myArray = explode(',', $param);
+        for ($i = 0; $i < count($myArray); $i++) {
+            $elem = $myArray[$i];
+            if($elem > 0){
+                DB::table('halls')
+                    ->where('id', $elem)
+                    ->update([
+                        'open' => false,
+                    ]);
+            }
+        }
+        return redirect()->back();
     }
 }

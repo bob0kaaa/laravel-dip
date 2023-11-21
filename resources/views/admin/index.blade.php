@@ -55,22 +55,37 @@
             <ul class="conf-step__selectors-box">
                 @foreach($halls as $hall)
                     <li>
-                        @if($hall->{'id'} === $selected_hall)
+                        @if($hall->{'id'} === $selected_hall && $hall->open !== true)
                             <input type="radio" id="{{ $hall->id }}" data-rows="{{ $hall->row }}" data-cols="{{ $hall->col }}" onclick="radioInput(id)" class="conf-step__radio" name="1{{ $hall->id }}" value="{{ $hall->name }}" checked>
                             <span class="conf-step__selector">{{ $hall->name }}</span>
                         @else
-                            <input type="radio" id="{{ $hall->id }}" data-rows="{{ $hall->row }}" data-cols="{{ $hall->col }}" onclick="radioInput(id)" class="conf-step__radio" name="1{{ $hall->id }}" value="{{ $hall->name }}">
+                            <input type="radio" id="{{ $hall->id }}" data-rows="{{ $hall->row }}" data-cols="{{ $hall->col }}" onclick="radioInput(id)" class="conf-step__radio" name="1{{ $hall->id }}" value="{{ $hall->name }}"
+                                @if($hall->open === true)
+                                    disabled
+                                @endif
+                            >
                             <span class="conf-step__selector">{{ $hall->name }}</span>
                         @endif
-
                     </li>
                 @endforeach
             </ul>
             <p class="conf-step__paragraph">{{ __('Укажите количество рядов и максимальное количество кресел в ряду:') }}</p>
             <div class="conf-step__legend">
-                <label class="conf-step__label">{{ __('Рядов') }}, {{ __('шт') }}<input id="rowsHall" type="number" class="conf-step__input" min="4" max="10" value="{{ $halls->where('id', $selected_hall)->first()->row }}"></label>
+                <label class="conf-step__label">{{ __('Рядов') }}, {{ __('шт') }}
+                    <input id="rowsHall" type="number" class="conf-step__input" min="4" max="10" value="{{ $halls->where('id', $selected_hall)->first()->row }}"
+                        @if($hall->open === '1')
+                            readonly
+                        @endif
+                    >
+                </label>
                 <span class="multiplier">x</span>
-                <label class="conf-step__label">{{ __('Мест') }}, {{ __('шт') }}<input id="colsHall" type="number" class="conf-step__input" min="4" max="12" value="{{ $halls->where('id', $selected_hall)->first()->col }}"></label>
+                <label class="conf-step__label">{{ __('Мест') }}, {{ __('шт') }}
+                    <input id="colsHall" type="number" class="conf-step__input" min="4" max="12" value="{{ $halls->where('id', $selected_hall)->first()->col }}"
+                           @if($hall->open === '1')
+                               readonly
+                        @endif
+                    >
+                </label>
             </div>
             <p class="conf-step__paragraph">{{ __('Теперь вы можете указать типы кресел на схеме зала:') }}</p>
             <div class="conf-step__legend">
@@ -91,30 +106,49 @@
             <ul class="conf-step__selectors-box">
                 @foreach($halls as $hall)
                     <li>
-                        @if($hall->{'id'} == $selected_hall)
+                        @if($hall->{'id'} === $selected_hall && $hall->open !== true)
                             <input type="radio" id="{{ $hall->id }}" data-rows="{{ $hall->row }}" data-cols="{{ $hall->col }}" onclick="radioInput(id)" class="conf-step__radio" name="{{ $hall->id }}" value="{{ $hall->name }}" checked>
                             <span class="conf-step__selector">{{ $hall->name }}</span>
                         @else
-                            <input type="radio" id="{{ $hall->id }}" data-rows="{{ $hall->row }}" data-cols="{{ $hall->col }}" onclick="radioInput(id)" class="conf-step__radio" name="{{ $hall->id }}" value="{{ $hall->name }}">
+                            <input type="radio" id="{{ $hall->id }}" data-rows="{{ $hall->row }}" data-cols="{{ $hall->col }}" onclick="radioInput(id)" class="conf-step__radio" name="{{ $hall->id }}" value="{{ $hall->name }}"
+                                   @if($hall->open === true)
+                                       disabled
+                                @endif
+                            >
                             <span class="conf-step__selector">{{ $hall->name }}</span>
                         @endif
-
                     </li>
                 @endforeach
             </ul>
             <p class="conf-step__paragraph">Установите цены для типов кресел:</p>
             <div class="conf-step__legend">
-                <label class="conf-step__label">Цена, рублей<input id="priceNormal" type="text" class="conf-step__input" placeholder="{{ $halls->where('id', $selected_hall)->first()->count_normal }}" value="{{ $halls->where('id', $selected_hall)->first()->count_normal }}"></label>
+                <label class="conf-step__label">Цена, рублей
+                    <input id="priceNormal" type="text" class="conf-step__input" placeholder="{{ $halls->where('id', $selected_hall)->first()->count_normal }}" value="{{ $halls->where('id', $selected_hall)->first()->count_normal }}"
+                           @if($hall->open === '1')
+                               readonly
+                        @endif
+                    >
+                </label>
                 за <span class="conf-step__chair conf-step__chair_standart"></span> обычные кресла
             </div>
             <div class="conf-step__legend">
-                <label class="conf-step__label">Цена, рублей<input id="priceVip" type="text" class="conf-step__input" placeholder="{{ $halls->where('id', $selected_hall)->first()->count_vip }}" value="{{ $halls->where('id', $selected_hall)->first()->count_vip }}"></label>
+                <label class="conf-step__label">Цена, рублей
+                    <input id="priceVip" type="text" class="conf-step__input" placeholder="{{ $halls->where('id', $selected_hall)->first()->count_vip }}" value="{{ $halls->where('id', $selected_hall)->first()->count_vip }}"
+                        @if($hall->open === '1')
+                            readonly
+                        @endif
+                    >
+                </label>
                 за <span class="conf-step__chair conf-step__chair_vip"></span> VIP кресла
             </div>
 
             <fieldset class="conf-step__buttons text-center">
-                <button class="conf-step__button conf-step__button-regular">Отмена</button>
-                <input onclick="editPrice(id)" type="submit" value="Сохранить" class="conf-step__button conf-step__button-accent">
+{{--                <button class="conf-step__button conf-step__button-regular">Отмена</button>--}}
+                <input onclick="editPrice(id)" type="submit" value="Сохранить" class="conf-step__button conf-step__button-accent"
+                    @if($halls->where('id', $selected_hall)->first()->open === true)
+                        style="opacity: 0; cursor: auto;" disabled
+                    @endif
+                >
             </fieldset>
         </div>
     </section>
@@ -176,12 +210,25 @@
                 @endforeach
             </div>
 
-            <fieldset class="conf-step__buttons text-center">
-                <button class="conf-step__button conf-step__button-regular">Отмена</button>
-                <input type="submit" value="Сохранить" class="conf-step__button conf-step__button-accent">
-            </fieldset>
         </div>
         @include('admin.add_film')
+    </section>
+    <section class="conf-step">
+        <header class="conf-step__header conf-step__header_opened">
+            <h2 class="conf-step__title">{{ __('Открыть продажи') }}</h2>
+        </header>
+        <div class="conf-step__wrapper text-center">
+            <p class="conf-step__paragraph">{{ __('Всё готово, теперь можно:') }}</p>
+            @php
+                $countHallTrue = count($halls->where('open' , true));
+                $countHall = count($halls);
+             @endphp
+            @if($countHallTrue === $countHall)
+                <button id="closeHall" onclick="closeHall(id)" data-hall="@foreach($halls as $hall) @if($hall->open === true){{ $hall->id }}, @endif @endforeach" class="conf-step__button conf-step__button-accent">{{ __('Закрыть продажу билетов') }}</button>
+            @else
+                <button id="openHall" onclick="openHall(id)" data-hall="@foreach($halls as $hall) @if($hall->open === false){{ $hall->id }}, @endif @endforeach" class="conf-step__button conf-step__button-accent">{{ __('Открыть продажу билетов') }}</button>
+            @endif
+        </div>
     </section>
     <script>
         function radioInput(id){
@@ -476,8 +523,32 @@
             popup.querySelector('#dismiss3').addEventListener('click', () => {
                 popup.classList.remove('active');
             })
+
         }
 
+        function openHall(id) {
+            console.log(id);
+            let param = document.getElementById(id).dataset.hall;
+            param = param.replaceAll(' ', '');
+            console.log(param)
+           let url = "{{ route('admin.open',['param' => 'param']) }}";
+            url = url.replace('param', param);
+            url = url.replaceAll('&amp;', '&');
+            console.log(url)
+            window.location.href = url;
+        }
+
+        function closeHall(id) {
+            console.log(id);
+            let param = document.getElementById(id).dataset.hall;
+            param = param.replaceAll(' ', '');
+            console.log(param)
+            let url = "{{ route('admin.close',['param' => 'param']) }}";
+            url = url.replace('param', param);
+            url = url.replaceAll('&amp;', '&');
+            console.log(url)
+            window.location.href = url;
+        }
 
     </script>
 @endsection

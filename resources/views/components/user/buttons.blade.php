@@ -2,14 +2,12 @@
     <div class="buying-scheme__wrapper">
         @for ($i = 1; $i <= $hall['row']; $i++)
             <div class="buying-scheme__row">
-                {{$seats}}
                 @foreach ($seats->where('row_number', $i) as $item)
                     @if(!$item['free'])
                         <button onclick = "cl(id)" id="{{$item['row_number']}},{{$item['col_number']}}" type="button" class="buying-scheme__chair buying-scheme__chair_taken">
                     @else
                         @php
                             $plice = $item['row_number'].",".$item['col_number'];
-//                            dd(json_decode($hall['seats_type'])->{$plice});
                         @endphp
                         @switch(json_decode($hall['seats_type'])->{$plice})
                             @case('VIP')

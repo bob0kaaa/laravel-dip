@@ -9,7 +9,7 @@
             </div>
             <div class="popup__wrapper">
                 {{-- seance_delete{{$seance->id}} - id реального сеанса--}}
-                <form name="seance_delete{{$seance->id}}" action="{{ route('admin.destroyseance', ['id' => $seance->id]) }}" method="post" accept-charset="utf-8">
+                <form name="seance_delete{{$seance->id}}" action="{{ route('admin.destroySeance', ['id' => $seance->id]) }}" method="post" accept-charset="utf-8">
                     @csrf
                     {{--@method('DELETE')--}}
                     <p class="conf-step__paragraph">Вы действительно хотите снять с сеанса фильм: <span>"{{$film->title}}"</span>?</p>

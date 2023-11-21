@@ -14,12 +14,15 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        $films = DB::table('films')->get();
+//        dd($request->all());
+        $dateCurrent = $request->all()['dateCurrent'] ?? substr(Carbon::now(), 0, 10);
+        $dateChosen  = $request->all()['dateChosen'] ?? substr(Carbon::now(), 0, 10);
+
         $halls = DB::table('halls')->get();
         $seances = DB::table('seances')->get();
         $seats = DB::table('seats')->get();
-        $dateCurrent = $request->date_current ?? substr(Carbon::now(), 0, 10);
-        $dateChosen  = $request->date_chosen ?? substr(Carbon::now(), 0, 10);
+
+        $films = DB::table('films')->get();
         return view('home.index',
             [
                 'films' => $films,
@@ -29,8 +32,7 @@ class HomeController extends Controller
                 'dateCurrent' => $dateCurrent,
                 'dateChosen'=> $dateChosen,
             ]);
-        $query = Film::query();
-        dd($query);
+
     }
 
 }

@@ -14,6 +14,7 @@
             </p>
         </div>
     </div>
+{{--    @php dd($seances); @endphp--}}
     @foreach ($halls->where('open',true) as $hall)
         @php
             $i=0

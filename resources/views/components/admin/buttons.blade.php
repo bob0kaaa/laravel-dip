@@ -19,5 +19,9 @@
 </div>
 <fieldset class="conf-step__buttons text-center">
     <button onclick = " window.location.href='{{ route('admin.index', ['selected_hall' => $hall->{'id'}]) }}' " href="#" class="conf-step__button conf-step__button-regular">Отмена</button>
-    <button id="{{ $hall->{'id'} }}" type="submit" onclick="editSeat(id)" class="conf-step__button conf-step__button-accent">Сохранить</button>
+    <button id="{{ $hall->{'id'} }}" type="submit" onclick="editSeat(id)" class="conf-step__button conf-step__button-accent"
+    @if($hall->open === true)
+        style="opacity: 0; cursor: auto;"
+    @endif
+    >Сохранить</button>
 </fieldset>

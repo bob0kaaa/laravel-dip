@@ -23,10 +23,10 @@ class SeatController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        $seance=$request->seance;
-        return redirect()->route('admin.home', ['open'=> $open, 'selected_hall' => $selected_hall]);
+        $seance = $request->seance;
+        return redirect()->route('admin.home', ['selected_hall' => $selected_hall]);
     }
 
     /**
