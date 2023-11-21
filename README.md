@@ -6,7 +6,7 @@
 #### PHP 8.2
 #### NodeJS 18.16.0
 #### Сomposer 2.6.4
-#### PHP Qr Code
+#### PHPQrCode
 #### PostgreSQL
 ### Сущности
 
