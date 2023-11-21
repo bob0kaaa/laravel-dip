@@ -1,11 +1,9 @@
 @extends('layouts.base')
 @section('content')
     <section class="ticket">
-
         <header class="tichet__check">
             <h2 class="ticket__check-title">Электронный билет</h2>
         </header>
-
         <div class="ticket__info-wrapper">
             <p class="ticket__info">На фильм: <span class="ticket__details ticket__title">{{$film['title']}}</span></p>
             <p class="ticket__info">Места:
