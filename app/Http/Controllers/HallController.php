@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Http\Requests\HallCreateRequest;
 use App\Models\Film;
 use App\Models\Hall;
 use App\Models\Seance;
@@ -32,15 +33,20 @@ class HallController extends Controller
      */
     public function create(Request $request)
     {
-//        dd($request);
-        $createHall = DB::table('halls', $request['name'])->where('name', $request['name'])->get();
+//        $validated = $request->validated();
+
+        $validated = validator($request->all(), [
+            'name' => ['required', 'string', 'min:5'],
+        ])->validate();
+
+        $createHall = DB::table('halls', $request['name'])->where('name', $validated['name'])->get();
+
         if (count($createHall) !== 0) {
-            return redirect()->back()->with('status','Ошибка зал с именем ' . $request['name'] . ' уже существует');
+            return redirect()->back()->with('status','Ошибка зал с именем ' . $validated['name'] . ' уже существует');
         }
         Hall::query()->create([
-            'name' =>  $request['name'],
+            'name' =>  $validated['name'],
         ]);
-
 
         return redirect()->route('admin.index');
     }

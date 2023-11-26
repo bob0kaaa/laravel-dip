@@ -7,6 +7,7 @@
 @endphp
 @section('content')
     <span class="page-header__subtitle">{{ __('Администраторррская') }}</span>
+    <x-errors />
     @if(session('status'))
         <div class="conf-step__paragraph">
             {{session('status')}}
