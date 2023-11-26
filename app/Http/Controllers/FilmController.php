@@ -86,7 +86,6 @@ class FilmController extends Controller
             'duration' => ['required', 'integer', 'max:200'],
             'origin' => ['required', 'string'],
         ])->validate();
-//        dd($validated);
         DB::table('films')
             ->where('id', $id)
             ->update([

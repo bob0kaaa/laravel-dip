@@ -26,45 +26,78 @@ class SeanceController extends Controller
      */
     public function create(Request $request)
     {
+        $freeTime = true;
+        $date = $request->all()['seance_date'];
+        $time = $request->all()['seance_start'];
+        $seanceStart = $date . ' ' . $time;
+        $seanceStart = Carbon::parse($seanceStart);
 
-        $data = explode(" ", Carbon::now());
-        $data[1]=$request['seance_start'];
-        $data = implode(" ", $data);
-        Seance::query()->create([
-            'hall_id' => $request->all()['hall_id'],
-            'film_id' => $request->all()['film_id'],
-            'seance_start' => $data,
-        ]);
         $seance = DB::table('seances')
+            ->where('seance_start', '<=', $seanceStart)
             ->where('hall_id', $request->all()['hall_id'])
-            ->where('film_id', $request->all()['film_id'])
-            ->where('seance_start', $data)->get();
-//        dd();
-        $hall = DB::table('halls')
-            ->where('id', $request->all()['hall_id'])->get();
-        $anObject = json_decode($hall[0]->seats_type);
-        $keysFromObject = array_keys(get_object_vars($anObject));
-        for ($i = 0; $i < count($keysFromObject); $i++) {
-            $elem = $keysFromObject[$i];
-            $myArray = explode(',', $elem);
-            $row = $myArray[0];
-            $col = $myArray[1];
-            $keyCuston = $row . ',' . $col;
-            foreach ($anObject as $key => $val) {
-                if ($keyCuston === $key) {
-                    Seat::query()->create([
-                        'free' => true,
-                        'col_number' => $col,
-                        'row_number' => $row,
-                        'hall_id' => $request->all()['hall_id'],
-                        'ticket_id' => 0,
-                        'seance_id' => $seance[0]->id,
-                    ]);
+            ->latest('updated_at')->first();
+//        dd($seance->film_id);
+        $film = DB::table('films')
+            ->where('id', $seance->film_id)->first();
+        $seanceStartFilm =  Carbon::parse($seance->seance_start);
+        $seanceStartFilmTwo =  Carbon::parse($seance->seance_start);
+
+        $durationFilm = (int)$film->duration / 60;
+        $timeHours = (int)floor($durationFilm);
+        $timeMinutes =  (int)$film->duration - ((int)floor($durationFilm) * 60 );
+        $seanceFinishFilm = Carbon::parse($seance->seance_start)->addHour($timeHours)->addMinute($timeMinutes);
+        $seanceFinishFilmTwo = $seanceStartFilmTwo->addHour($timeHours)->addMinute($timeMinutes);
+        $comingSoon = $seanceFinishFilmTwo->addMinute(10);
+//                dd($seanceStart);
+//                dd($seanceStartFilm);
+//                dd($seanceFinishFilm);
+//        dd($comingSoon);
+        if ($seanceStart >= $seanceStartFilm && $seanceStart <= $seanceFinishFilm) {
+//            dd('123');
+            $freeTime = false;
+        }
+        if ($freeTime) {
+            $data = $seanceStart;
+//            $data[1]=$request['seance_start'];
+//            $data = implode(" ", $data);
+            Seance::query()->create([
+                'hall_id' => $request->all()['hall_id'],
+                'film_id' => $request->all()['film_id'],
+                'seance_start' => $data,
+            ]);
+            $seance = DB::table('seances')
+                ->where('hall_id', $request->all()['hall_id'])
+                ->where('film_id', $request->all()['film_id'])
+                ->where('seance_start', $data)->get();
+            $hall = DB::table('halls')
+                ->where('id', $request->all()['hall_id'])->get();
+            $anObject = json_decode($hall[0]->seats_type);
+            $keysFromObject = array_keys(get_object_vars($anObject));
+            for ($i = 0; $i < count($keysFromObject); $i++) {
+                $elem = $keysFromObject[$i];
+                $myArray = explode(',', $elem);
+                $row = $myArray[0];
+                $col = $myArray[1];
+                $keyCuston = $row . ',' . $col;
+                foreach ($anObject as $key => $val) {
+                    if ($keyCuston === $key) {
+                        Seat::query()->create([
+                            'free' => true,
+                            'col_number' => $col,
+                            'row_number' => $row,
+                            'hall_id' => $request->all()['hall_id'],
+                            'ticket_id' => 0,
+                            'seance_id' => $seance[0]->id,
+                        ]);
+                    }
                 }
             }
+            return redirect()->back();
+        }
+        if (!$freeTime) {
+            return redirect()->back()->with('status','Ошибка добавления сеанса, на эту дату и время есть уже сеанс. Ближайшее время ' . $comingSoon);
         }
 
-        return redirect()->back();
     }
 
     /**

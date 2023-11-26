@@ -32,6 +32,10 @@
             Время начала
             <input id="time" class="conf-step__input" type="time" value="00:00:00" name="seance_start" step="10" required>
           </label>
+          <label class="conf-step__label conf-step__label-fullsize" for="name">
+              Дата
+            <input id="time" class="conf-step__input" type="date"  name="seance_date" required>
+          </label>
               <input style="display: none;" name="film_id" value="{{ $film->id }}">
           <div class="conf-step__buttons text-center">
               <input  id="{{ $film->id }}" type="submit" value="Добавить" class="conf-step__button conf-step__button-accent" >
