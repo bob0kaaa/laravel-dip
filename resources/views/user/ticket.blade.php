@@ -20,7 +20,7 @@
             @php
 //            dd($qrCode);
                 $url = base_path() . '\public\qr\qr.png';
-                require_once base_path() . '\phpQrCode\qrlib.php';
+                require_once base_path() . '\phpqrcode\qrlib.php';
                 QrCode::png($qrCode, base_path() . '\public\qr\qr.png', 'H', 48, 2);
               echo '<img class="ticket__info-qr" src="\qr\qr.png" alt="$qrCode">';
 

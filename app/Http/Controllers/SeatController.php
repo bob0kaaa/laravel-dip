@@ -25,8 +25,7 @@ class SeatController extends Controller
      */
     public function create(Request $request)
     {
-        $seance = $request->seance;
-        return redirect()->route('admin.home', ['selected_hall' => $selected_hall]);
+        //
     }
 
     /**
@@ -50,6 +49,7 @@ class SeatController extends Controller
      */
     public function edit(Request $request)
     {
+//        dd($request->all());
         $film = $request['film'] ?? Film::all()->first();
         $hall = $request['hall'] ?? Hall::all()->first();
         $hall_decode = json_decode($hall['seats_type'], true);
@@ -90,8 +90,8 @@ class SeatController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
+        dd($request);
     }
 }

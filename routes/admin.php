@@ -26,6 +26,7 @@ Route::prefix('admin')->middleware(['auth', 'role'])->group(function (){
     Route::any('/destroyFilm/{id}', [FilmController::class, 'destroy'])->name('admin.destroyFilm');
     Route::any('/createSeance', [SeanceController::class, 'create'])->name('admin.createSeance');
     Route::any('/createSeats', [SeatController::class, 'create'])->name('admin.createSeat');
+    Route::any('/destroySeats', [SeatController::class, 'destroy'])->name('admin.destroySeat');
     Route::any('/destroySeance/{id}', [SeanceController::class, 'destroy'])->name('admin.destroySeance');
 
 });

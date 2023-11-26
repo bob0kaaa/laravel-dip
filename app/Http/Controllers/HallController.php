@@ -77,22 +77,31 @@ class HallController extends Controller
      */
     public function edit(Request $request)
     {
-//        dd($request);
+
         $id = $request->hall['id'];
         $json_seat = json_decode($request['json_seat']);
         $hallDb = DB::table('halls')
             ->where('id', $id)
             ->first();
-        $hallTypeNew  = json_decode($request['newTypeHall']);
-        $seatsType = $hallDb->seats_type = json_encode($hallTypeNew, JSON_THROW_ON_ERROR);
-        DB::table('halls')
-            ->where('id', $id)
-            ->update([
-                'seats_type' => $seatsType,
-                'col' => $json_seat[0],
-                'row' => $json_seat[1],
-            ]);
-        return redirect()->back();
+        $seances = DB::table('seances')
+            ->where('hall_id', $id)
+            ->get();
+//        dd($seances);
+        if(count($seances) === 0){
+            $hallTypeNew  = json_decode($request['newTypeHall']);
+            $seatsType = $hallDb->seats_type = json_encode($hallTypeNew, JSON_THROW_ON_ERROR);
+            DB::table('halls')
+                ->where('id', $id)
+                ->update([
+                    'seats_type' => $seatsType,
+                    'col' => $json_seat[0],
+                    'row' => $json_seat[1],
+                ]);
+
+            return redirect()->back();
+
+        }
+        return redirect()->back()->with('status','Ошибка редактирования : В зале ' .$hallDb->name .' существуют сеансы');
     }
 
     public function editPriceHall(Request $request)

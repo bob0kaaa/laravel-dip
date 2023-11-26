@@ -240,7 +240,9 @@
         }
         let btnList = document.querySelector('.conf-step__hall-wrapper');
         let rowsCount = document.getElementById('rowsHall');
+        rowsCount.onkeypress = function (e) { return false}
         let colsCount = document.getElementById('colsHall');
+        colsCount.onkeypress = function (e) { return false}
         rowsCount.addEventListener('change', (e) => {
             let count = rowsCount.value
             let arrayRows = btnList.querySelectorAll('.conf-step__row');
