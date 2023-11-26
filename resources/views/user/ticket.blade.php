@@ -15,7 +15,7 @@
                 @endforeach
             </p>
             <p class="ticket__info">В зале: <span class="ticket__details ticket__hall">{{$hall['id']}}</span></p>
-            <p class="ticket__info">Начало сеанса: <span class="ticket__details ticket__start">{{substr($seance['seance_start'], -8, 5)}}</span></p>
+            <p class="ticket__info">Начало сеанса: <span class="ticket__details ticket__start">{{\Carbon\Carbon::parse($seance['seance_start'])->format('d.m.Y H:m')}}</span></p>
             <p class="ticket__info">Стоимость билета: <span class="ticket__details ticket__hall">{{$count}}{{' руб.'}}</span></p>
             @php
 //            dd($qrCode);

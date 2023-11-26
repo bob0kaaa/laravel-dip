@@ -36,7 +36,45 @@ class SeanceController extends Controller
             ->where('seance_start', '<=', $seanceStart)
             ->where('hall_id', $request->all()['hall_id'])
             ->latest('updated_at')->first();
-//        dd($seance->film_id);
+//        dd($seance);
+        if ($seance === null) {
+            $data = $seanceStart;
+//            $data[1]=$request['seance_start'];
+//            $data = implode(" ", $data);
+            Seance::query()->create([
+                'hall_id' => $request->all()['hall_id'],
+                'film_id' => $request->all()['film_id'],
+                'seance_start' => $data,
+            ]);
+            $seance = DB::table('seances')
+                ->where('hall_id', $request->all()['hall_id'])
+                ->where('film_id', $request->all()['film_id'])
+                ->where('seance_start', $data)->get();
+            $hall = DB::table('halls')
+                ->where('id', $request->all()['hall_id'])->get();
+            $anObject = json_decode($hall[0]->seats_type);
+            $keysFromObject = array_keys(get_object_vars($anObject));
+            for ($i = 0; $i < count($keysFromObject); $i++) {
+                $elem = $keysFromObject[$i];
+                $myArray = explode(',', $elem);
+                $row = $myArray[0];
+                $col = $myArray[1];
+                $keyCuston = $row . ',' . $col;
+                foreach ($anObject as $key => $val) {
+                    if ($keyCuston === $key) {
+                        Seat::query()->create([
+                            'free' => true,
+                            'col_number' => $col,
+                            'row_number' => $row,
+                            'hall_id' => $request->all()['hall_id'],
+                            'ticket_id' => 0,
+                            'seance_id' => $seance[0]->id,
+                        ]);
+                    }
+                }
+            }
+            return redirect()->back();
+        }
         $film = DB::table('films')
             ->where('id', $seance->film_id)->first();
         $seanceStartFilm =  Carbon::parse($seance->seance_start);
