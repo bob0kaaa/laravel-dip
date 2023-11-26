@@ -33,7 +33,6 @@ class HallController extends Controller
      */
     public function create(Request $request)
     {
-//        $validated = $request->validated();
 
         $validated = validator($request->all(), [
             'name' => ['required', 'string', 'min:5'],

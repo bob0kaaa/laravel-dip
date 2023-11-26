@@ -20,17 +20,25 @@ class FilmController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(FilmCreateRequest $request)
+    public function create(Request $request)
     {
+        $validated = validator($request->all(), [
+            'title' => ['required', 'string'],
+            'description' => ['required', 'string'],
+            'duration' => ['required', 'integer', 'max:200'],
+            'origin' => ['required', 'string'],
+            'image_text' => ['string'],
+            'image_path' => ['required', 'file'],
+        ])->validate();
+
 
         $path = $request->file('image_path')->store('upload');
-        $params = $request->all();
-//        dd($params);
+
         DB::table('films')->insert([
-            'title' => $params['title'],
-            'description' => $params['description'],
-            'duration' => $params['duration'],
-            'origin' => $params['origin'],
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'duration' => $validated['duration'],
+            'origin' => $validated['origin'],
             'image_path' => $path,
             'image_text' => 'poster film ' . 'title',
         ]);
@@ -59,9 +67,7 @@ class FilmController extends Controller
      */
     public function edit(Request $request)
     {
-//        $id = $request->all()['film']['id'];
-//        $film = DB::table('films')->where('id', $id)->first();
-//        return view('admin.edit_film', ['film' => $film]);
+        //
     }
 
     /**
@@ -74,15 +80,21 @@ class FilmController extends Controller
         if( count($request->files) !== 0) {
             $imagePath = $request->all()['image_path']->store('upload');
         }
-
+        $validated = validator($request->all(), [
+            'title' => ['required', 'string'],
+            'description' => ['required', 'string'],
+            'duration' => ['required', 'integer', 'max:200'],
+            'origin' => ['required', 'string'],
+        ])->validate();
+//        dd($validated);
         DB::table('films')
             ->where('id', $id)
             ->update([
-                'title' => $request->all()['title'],
-                'description' => $request->all()['description'],
-                'duration' => $request->all()['duration'],
+                'title' => $validated['title'],
+                'description' => $validated['description'],
+                'duration' => $validated['duration'],
                 'image_path' => $imagePath,
-                'origin' => $request->all()['origin'],
+                'origin' => $validated['origin'],
             ]);
 
         return redirect()->back();
